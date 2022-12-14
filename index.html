@@ -1,0 +1,94 @@
+<html>
+    <head>
+        <title>Chat desarrollado por MZZ</title>
+        
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+
+        <script
+            src="http://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+        
+        <style>
+            #chat{
+                position: relative;
+                width: 100%;
+                float: left;
+                min-height: 80%;
+                height: 70%;
+                overflow: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="page-header">
+                <h1>Chat - Martin Zayas</h1>
+            </div>
+            <div id="content" class="row" style="height:70%;">
+                <div class="col-md-2"></div>
+                <div id="chatContent" class="col-md-6">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            Chat
+                        </div>
+                        <div id="chat" class="panel-body">
+                            
+                        </div>
+                    </div>
+                    <div>
+                        <form id="sendMessage" class="input-group" style="text-align:center; margin:auto;" action="">
+                            <input id="message" type="text" name="message" class="form-control input-lg">
+                            <span class="input-group-btn">
+                                <button class="btn btn-lg btn-primary" type="submit">Enviar mensaje</button>
+                            </span>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            
+            var username = prompt("Please enter your name");
+
+            $socket = io.connect();
+
+            $socket.on('connect', function(){
+                $socket.emit('authentication', {username: username, password: "admin"});
+                $socket.on('authenticated', function() {
+                    // use the $socket as usual
+                    //alert("Se ha logeado con Ã©xito!");
+                });
+
+                $socket.on('unauthorized', function(err){
+                    alert("El usuario no existe");
+                });
+            });
+
+            $messageForm = $("#sendMessage"); 
+            $message = $("#message");
+            $chat = $('#chat');
+
+            $messageForm.submit(function(e){
+                e.preventDefault();
+                if ($message.val() != '') {
+                    $socket.emit('sendMessage',$message.val());
+                }
+                $message.val('');
+            });
+
+            $socket.on('newMessage',function(data){
+                $chat.append(' - ' + data.msg + '<br>');
+            });
+        </script>
+    </body>
+</html>

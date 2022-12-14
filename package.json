@@ -1,0 +1,14 @@
+{
+    "name": "chatnodejs",
+    "version": "0.1.0",
+    "description": "Chat de prueba en nodejs",
+    "main": "app.js",
+    "author": "José Martin Zayas Zermeño <jmartinzayasz@gmail.com>",
+    "dependencies": {
+        "body-parser": "^1.18.3",
+        "express": "^4.16.4",
+        "mysql": "^2.18.1",
+        "socket.io": "^2.2.0",
+        "socketio-auth": "^0.1.1"
+    }
+}

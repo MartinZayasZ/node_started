@@ -1,0 +1,50 @@
+Obtener logs de un contendor
+docker logs CONTAINER_ID
+parametro -f para que se quede esperando
+
+Ejecutar un comando dentro de un contenedor encendido
+docker exec -it CONTAINER_ID sh
+
+Correr en background
+docker run -d nginx
+
+Crear una imagen
+docker build -t NOMBRE_IMAGEN .
+
+Crear una imagen v2
+docker build -t NOMBRE_IMAGEN:v2 .
+
+Correr contenedor con puerto y background
+docker run -dp 8000:8080 node-started4
+
+Para agregar cambios en tiempo real
+docker run -d -v /RUTA_LOCAL:/RUTA_IMAGEN -p 8000:8080 mzayas/node-started
+
+Crear imagen para publicar
+docker tag 92e642ea87ed mzayas/node-started
+
+Subir imagen creada
+docker push mzayas/node-started
+
+
+----------------------- MULTI CONTAINER --------------------------------
+Crear red
+docker network create prueba-app
+
+Agregar una base de datos con un volumen persistente y agregarlo a la red
+docker run -d --network prueba-app --network-alias mysql -v prueba-mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=chat-app mysql:5.7
+
+Entrar a la base de datos de esta forma
+docker exec -it ed1cbd59a4fe mysql -p
+
+Crear un probador de red y agregarlo a la red creada(solo pruebaas)
+docker run -it --network prueba-app nicolaka/netshoot
+--COMMANDS
+    dig mysql
+
+Crear contenedor y mandando variables de entorno para la conexión a la base de datos y agregandolo a la red
+docker run -d -p 8001:8080 --network prueba-app -e MYSQL_HOST=mysql -e MYSQL_USER=root -e MYSQL_PASSWORD=password -e MYSQL_DATABASE=chat-app node-started:2-mysql
+
+
+Correr docker compose
+docker-compose up -d
